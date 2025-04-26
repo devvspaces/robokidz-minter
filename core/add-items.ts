@@ -1,33 +1,27 @@
-import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { publicKey } from "@metaplex-foundation/umi";
 import {
-  mplCandyMachine,
-  fetchCandyMachine,
   addConfigLines,
-} from "@metaplex-foundation/mpl-candy-machine";
+  fetchCandyMachine,
+} from "@metaplex-foundation/mpl-core-candy-machine";
+import { getUmi } from "./helper";
 import * as fs from "fs";
 import * as path from "path";
-import { getKeypairFromFile } from "@solana-developers/helpers";
 import dotenv from "dotenv";
-import { NETWORK } from "./utils";
 dotenv.config();
 
+const candyMachineAddress = publicKey(process.env.CANDY_MACHINE_ADDRESS!);
+
 async function main() {
+  const umi = await getUmi();
   // Load and parse the uploads.json file
-  const uploadsFilePath = path.join(__dirname, "uploads.json");
+  const uploadsFilePath = path.join(__dirname, "../uploads.json");
   const uploadsData = JSON.parse(fs.readFileSync(uploadsFilePath, "utf-8"));
   const uris: string[] = Object.values(uploadsData);
 
-  // Use the RPC endpoint of your choice.
-  const umi = createUmi(NETWORK).use(mplCandyMachine());
-
-  const user = await getKeypairFromFile(process.env.KEYPAIR_PATH!);
-  const signer = umi.eddsa.createKeypairFromSecretKey(user.secretKey);
-  umi.use(keypairIdentity(signer));
-
-  const candyMachineAddress = publicKey(process.env.CANDY_ID!);
+  // Fetch the candy machine
   const candyMachine = await fetchCandyMachine(umi, candyMachineAddress);
 
+  // Batch insert items
   const BATCH_SIZE = 5; // Number of config lines to add in each batch
   const START_INDEX = candyMachine.itemsLoaded; // Start from the current loaded index
   const END_INDEX = START_INDEX + uris.length; // End index for the new items

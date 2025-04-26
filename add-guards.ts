@@ -16,6 +16,7 @@ import {
   getMerkleRoot,
   mplCandyMachine,
   route,
+  safeFetchCandyGuard,
   updateCandyGuard,
 } from "@metaplex-foundation/mpl-candy-machine";
 import * as fs from "fs";
@@ -24,6 +25,7 @@ import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { create } from "@metaplex-foundation/mpl-candy-machine";
 import dotenv from "dotenv";
 import { getKeypairFromFile } from "@solana-developers/helpers";
+import { creator1, NETWORK } from "./utils";
 dotenv.config();
 
 // Define collections that are eligible for whitelist
@@ -51,14 +53,11 @@ const TEAM_WALLETS = [
 
 async function main() {
   // Use the RPC endpoint of your choice.
-  const umi = createUmi("http://127.0.0.1:8899").use(mplCandyMachine());
+  const umi = createUmi(NETWORK).use(mplCandyMachine());
 
   const user = await getKeypairFromFile(process.env.KEYPAIR_PATH!);
   const signer = umi.eddsa.createKeypairFromSecretKey(user.secretKey);
   umi.use(keypairIdentity(signer));
-
-  const treasuryA = publicKey("FetH969xkHRhF5jh7UW3jAN8BovSLhpckwWg28o3RMp4");
-  const treasuryB = publicKey("3B4hiwYxEMKc9qSX8tZxbjGSMotiFzpqjADjr5CNvsFv");
 
   const whitelistGroups = Object.entries(ELIGIBLE_COLLECTIONS).map(
     ([label, address]) => ({
@@ -79,9 +78,13 @@ async function main() {
     })
   );
 
-  const candyMachineAddress = "88J7aDMTUjpDydVj79sqoqBxqjTxyi2JyZcDK4M77ebr"
-  const candyMachine = await fetchCandyMachine(umi, publicKey(candyMachineAddress));
-  const candyGuard = await fetchCandyGuard(umi, candyMachine.mintAuthority);
+  const candyMachineAddress = publicKey(process.env.CANDY_ID!);
+  const candyMachine = await fetchCandyMachine(umi, candyMachineAddress);
+  const candyGuard = await safeFetchCandyGuard(umi, candyMachine.mintAuthority);
+
+  if (!candyGuard) {
+    throw new Error("Candy Guard not found");
+  }
   
   const res = await updateCandyGuard(umi, {
     candyGuard: candyGuard.publicKey,
@@ -92,7 +95,7 @@ async function main() {
         guards: {
           solPayment: some({
             lamports: sol(0),
-            destination: treasuryA,
+            destination: creator1,
           }),
           allocation: some({
             id: 2,
@@ -106,18 +109,18 @@ async function main() {
         guards: {
           solPayment: some({
             lamports: sol(1),
-            destination: treasuryA,
+            destination: creator1,
           }),
           allocation: some({
             id: 1,
             limit: 2500,
           }),
-          allowList: none(),
+          allowList: null,
         },
       },
     ],
     guards: {
-      botTax: none(),
+      botTax: null,
     },
   }).sendAndConfirm(umi);
   console.log(`Candy Guard updated with address: ${res.signature.toString()}`);
