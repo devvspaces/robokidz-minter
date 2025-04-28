@@ -64,7 +64,7 @@ async function main() {
       label: `wl-${label}`,
       guards: {
         solPayment: some({
-          lamports: sol(0.5),
+          lamports: sol(0.25),
           destination: signer.publicKey,
         }),
         allocation: some({
@@ -108,7 +108,7 @@ async function main() {
         label: "public",
         guards: {
           solPayment: some({
-            lamports: sol(1),
+            lamports: sol(0.5),
             destination: creator1,
           }),
           allocation: some({
