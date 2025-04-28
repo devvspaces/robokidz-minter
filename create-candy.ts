@@ -41,7 +41,7 @@ async function main() {
       collectionUpdateAuthority: umi.identity,
       tokenStandard: TokenStandard.NonFungible,
       sellerFeeBasisPoints: percentAmount(5, 2),
-      itemsAvailable: 50,
+      itemsAvailable: 5000,
       creators: [
         { address: creator1, percentageShare: 50, verified: false },
         { address: creator2, percentageShare: 50, verified: false },
