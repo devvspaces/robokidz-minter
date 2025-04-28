@@ -125,6 +125,8 @@ async function main() {
   }).sendAndConfirm(umi);
   console.log(`Candy Guard updated with address: ${res.signature.toString()}`);
 
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
   route(umi, {
     candyMachine: candyMachine.publicKey,
     candyGuard: candyGuard.publicKey,

@@ -142,3 +142,5 @@ temp/
 test-ledger/
 
 *.so
+
+key.json

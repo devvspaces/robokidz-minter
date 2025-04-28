@@ -6,7 +6,7 @@ dotenv.config();
 
 export const DEVNET = "https://api.devnet.solana.com"
 export const LOCAL = "http://127.0.0.1:8899"
-export const MAINNET = "https://api.mainnet-beta.solana.com"
+export const MAINNET = process.env.MAINNET_URL || "https://api.mainnet-beta.solana.com"
 export let NETWORK = LOCAL
 
 export const creator1 = publicKey("FetH969xkHRhF5jh7UW3jAN8BovSLhpckwWg28o3RMp4");

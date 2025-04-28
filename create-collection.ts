@@ -22,18 +22,12 @@ async function main() {
   // create a new connection to Solana's devnet cluster
   const connection = new Connection(NETWORK, {
     commitment: "confirmed",
+    wsEndpoint: NETWORK.replace("http", "ws"),
   });
 
   // load keypair from local file system
   // assumes that the keypair is already generated using `solana-keygen new`
   const user = await getKeypairFromFile(process.env.KEYPAIR_PATH!);
-
-  await airdropIfRequired(
-    connection,
-    user.publicKey,
-    1 * LAMPORTS_PER_SOL,
-    0.1 * LAMPORTS_PER_SOL
-  );
 
   console.log("Loaded user:", user.publicKey.toBase58());
 
@@ -44,27 +38,6 @@ async function main() {
 
   // assigns a signer to our umi instance, and loads the MPL metadata program and Irys uploader plugins.
   umi.use(keypairIdentity(umiKeypair)).use(mplTokenMetadata());
-
-  // const image = await uploadFile("./logo.png", "collection.png");
-  // const metadata = {
-  //   name: "RoboKidz Collection",
-  //   symbol: "ROBO",
-  //   description:
-  //     "RoboKidz is a community of 5,000 rebels on the Solana blockchain, hacking reality and building together for max gains.",
-  //   image: image,
-  //   external_url: "https://www.robokidz.io/",
-  //   properties: {
-  //     files: [
-  //       {
-  //         uri: image,
-  //         type: "image/png",
-  //       },
-  //     ],
-  //     category: "image",
-  //   },
-  // };
-  // const uri = await uploadJson(metadata);
-  // console.log("Uploaded metadata:", uri);
 
   const uri = "https://scarlet-quick-muskox-732.mypinata.cloud/ipfs/bafkreiemd5cd244uaaik5uc2kbzvr7yjq2xoawqk66v6kotxicll7l3vke"
 
@@ -92,5 +65,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
-// 6gsDuqYNrTxUNCgMFsdyxaiMpfNiWDv87wW4DXdRKz1w
