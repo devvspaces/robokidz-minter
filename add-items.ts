@@ -42,6 +42,7 @@ async function main() {
         uri,
       })),
     }).sendAndConfirm(umi);
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Optional delay between batches
     console.log(
       `Added config lines from ${i} to ${Math.min(i + BATCH_SIZE, END_INDEX)}`
     );
