@@ -28,7 +28,7 @@ async function main() {
   const candyMachineAddress = publicKey(process.env.CANDY_ID!);
   const candyMachine = await fetchCandyMachine(umi, candyMachineAddress);
 
-  const BATCH_SIZE = 5; // Number of config lines to add in each batch
+  const BATCH_SIZE = 50; // Number of config lines to add in each batch
   const START_INDEX = candyMachine.itemsLoaded; // Start from the current loaded index
   const END_INDEX = START_INDEX + uris.length; // End index for the new items
 
