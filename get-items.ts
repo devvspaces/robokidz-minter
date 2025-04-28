@@ -27,7 +27,7 @@ async function main() {
   console.log("Candy itemsLoaded:", candyMachine.itemsLoaded);
   console.log("Candy itemsRedeemed:", candyMachine.itemsRedeemed);
   console.log("Candy authority:", candyMachine.authority);
-  console.log("Candy items:", candyMachine.items[0]);
+  console.log("Candy items:", candyMachine.items[candyMachine.itemsLoaded - 1]);
 
   const allAssets = await fetchAllDigitalAssetByOwner(
     umi,
