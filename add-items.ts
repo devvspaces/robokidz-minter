@@ -29,9 +29,9 @@ async function main() {
   const candyMachine = await fetchCandyMachine(umi, candyMachineAddress);
 
   const BATCH_SIZE = 10; // Number of config lines to add in each batch
-  const START_INDEX = 50; // Start from the current loaded index
-  // const START_INDEX = candyMachine.itemsLoaded; // Start from the current loaded index
-  const END_INDEX = START_INDEX + uris.length; // End index for the new items
+  // const START_INDEX = 50; // Start from the current loaded index
+  const START_INDEX = candyMachine.itemsLoaded; // Start from the current loaded index
+  const END_INDEX = uris.length; // End index for the new items
 
   for (let i = START_INDEX; i < END_INDEX; i += BATCH_SIZE) {
     const batchUris = uris.slice(i, i + BATCH_SIZE);
