@@ -35,6 +35,9 @@ async function main() {
 
   for (let i = START_INDEX; i < END_INDEX; i += BATCH_SIZE) {
     const batchUris = uris.slice(i, i + BATCH_SIZE);
+    const { blockhash, lastValidBlockHeight } = await umi.rpc.getLatestBlockhash({
+      commitment: "finalized"
+    });
     await addConfigLines(umi, {
       candyMachine: candyMachine.publicKey,
       index: i,
@@ -42,10 +45,13 @@ async function main() {
         name: (i + index).toString(),
         uri,
       })),
-    }).sendAndConfirm(umi);
+    })
+    .setBlockhash(blockhash)
+    .sendAndConfirm(umi);
     console.log(
       `Added config lines from ${i} to ${Math.min(i + BATCH_SIZE, END_INDEX)}`
     );
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 1 second before the next batch
   }
   console.log("Config lines added successfully!");
 }
