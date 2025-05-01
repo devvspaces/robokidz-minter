@@ -64,7 +64,7 @@ async function main() {
       label: `wl-${label}`,
       guards: {
         solPayment: some({
-          lamports: sol(0.5),
+          lamports: sol(0.25),
           destination: creator1,
         }),
         allocation: some({
@@ -132,7 +132,7 @@ async function main() {
     candyGuard: candyGuard.publicKey,
     guard: 'allocation',
     routeArgs: {
-      id: 1,
+      id: 0.5,
       candyGuardAuthority: umi.identity,
     },
     group: some('public'),
