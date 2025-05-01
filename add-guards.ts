@@ -65,7 +65,7 @@ async function main() {
       guards: {
         solPayment: some({
           lamports: sol(0.5),
-          destination: signer.publicKey,
+          destination: creator1,
         }),
         allocation: some({
           id: 3,
